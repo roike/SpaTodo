@@ -1,0 +1,9 @@
+Copyright (c) 2016 ryuji.oike@gmail.com
+Released under the MIT license
+http://opensource.org/licenses/mit-license.php
+-----------------------------------------
+My spa's idea come from mmikowski@gmail.com
+https://github.com/mmikowski
+
+This SpaTodo for App Engine with Golang 
+based on the provided sample of io2014-codelabs by Google.

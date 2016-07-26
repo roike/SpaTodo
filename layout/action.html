@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--
+  golang todo action.html
+  Copyright ryuji.oike@gmail.com
+-->
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spa Template for GAE</title>
+  <link rel="shortcut icon" href="/images/icon.png">
+  <!-- stylesheets -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosansjapanese.css" type="text/css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel='stylesheet' href='todo.css'>
+  <!-- third-party javascript -->
+  <!-- our javascript -->
+</head>
+<body>
+  <main id="spa">
+    <article id="home-container">
+      <div class="container">
+        <div class="rounded-box">
+          <a class="white rounded-box" href="#"> Log in</a>
+        </div>          
+        <h1 class="rounded-box charcoal">Watch manga</h1>
+        <ul class="grey rounded-box">
+        </ul> 
+        <form class="grey rounded-box" action="/list">
+          <div class="">
+            <input class="rounded-box" type="text" placeholder="new list name">
+            <i class="material-icons md-36 grey500">add_box</i>
+          </div>
+        </form>
+        <ul class="grey rounded-box">
+          <li><button class="white rounded-box" href="#">Delete</a></li>
+          <li><a class="white rounded-box" href="#">Back Home</a></li>
+        </ul>
+        <div class="logs">
+          <div class="error rounded-box">login required</div>
+        </div>
+      </div>
+    </article>
+  </main>
+</body>
+</html>

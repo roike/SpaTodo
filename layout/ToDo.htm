@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!--
+  golang todo todo.html
+  Copyright ryuji.oike@gmail.com
+-->
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spa Template for GAE</title>
+  <link rel="shortcut icon" href="icon.png">
+  <!-- stylesheets -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosansjapanese.css" type="text/css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel='stylesheet' href='todo.css'>
+  <!-- third-party javascript -->
+  <!-- our javascript -->
+</head>
+<body>
+  <main id="spa">
+    <article id="home-container">
+      <div class="container">
+        <div class="rounded-box">
+          <a class="white rounded-box" href="#"> Log in</a>
+        </div>          
+        <h1 class="rounded-box charcoal">All the lists</h1>
+        <ul class="grey rounded-box">
+          <li><a class="white rounded-box" href="#">Watch manga</a></li>
+          <li><a class="white rounded-box" href="#">Watch TV</a></li>
+          <li class="isDone">
+            <a class="white rounded-box" href="#">Listen Radio</a>
+          </li>
+        </ul> 
+        <form class="grey rounded-box" action="/list">
+          <input class="rounded-box" type="text" placeholder="new list name">
+          <button type="submit"><i class="material-icons md-36 grey500">add_box</i></button>
+        </form>
+        <div class="logs"></div>
+      </div>
+    </article>
+  </main>
+</body>
+</html>

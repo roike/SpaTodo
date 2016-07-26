@@ -1,0 +1,33 @@
+# Copyright 2011 The Go Authors.  All rights reserved.
+# Use of this source code is governed by a BSD-style
+# license that can be found in the LICENSE file.
+
+application: rtsience2
+version: 1-01
+runtime: go
+api_version: go1
+
+skip_files:
+- ^(.*/)?#.*#$
+- ^(.*/)?.*~$
+- ^(.*/)?.*\.py[co]$
+- ^(.*/)?.*/RCS/.*$
+- ^(.*/)?\..*$
+#the above list is default
+- ^(.*/)?.*/layout/.*$
+
+handlers:
+- url: /icon.png
+  static_files: static/icon.png
+  upload: static/icon.png
+- url: /css
+  static_dir: static/css
+- url: /images
+  static_dir: static/images
+- url: /js
+  static_dir: static/js
+- url: /api/.*
+  script: _go_app
+- url: /.*
+  static_files: static/todo.html
+  upload: static/todo.html
