@@ -17,7 +17,7 @@
  ajax.get(url, params)
  ajax.post(url, params)
  -----response-----------------
- data = JSON.parse(response) == {publish: <val>, appsid: <appsid>}
+ data = { }
 */
 spa.model = (() =>{
   'use strict';
@@ -25,14 +25,14 @@ spa.model = (() =>{
   let stateMap = {
     user: null,
     list: null,
-    tasks: null
+    tasks: null,
+    chatroom: null,
+    chatadmin: null
   };
 
-  //モックステータス--false-->fakeデータ使用
   const isFakeData = false;
 
-  //anchor= list or task
-  //return --> [anchor, id]
+  //return --> [anchor, ..]
   const toFactor = (url, anchor) => {
     const hrefList = url.split('/');
     return _.rest(hrefList, _.indexOf(hrefList, anchor));
@@ -47,12 +47,14 @@ spa.model = (() =>{
     const login = urlList => {
       //console.info(urlList);
       const params = {page: JSON.stringify(urlList)};
-      ajax.get('/api/auth', params)
+      stateMap.user.anchor = urlList;
+      ajax.get('/auth', params)
         .then(response => {
           //console.info(response);
           stateMap.user.name = response.User || 'a0';
           stateMap.user.login = response.Login || null;
           stateMap.user.logout = response.Logout || null;
+          stateMap.chatroom = {roomid: response.Roomid || null};
           spa.gevent.publish('spa-login', stateMap.user);
         })
         .catch(error => {
@@ -69,10 +71,15 @@ spa.model = (() =>{
 
   const List = (() => {
     const ajax = isFakeData ? spa.fake.mockAjax : spa.data.getAjax;
-    const fetch = () => {
-      ajax.get('/api/list', null)
+    const fetch = page => {
+      let url = page.join('/');
+      console.info(url);
+      if (page.length == 1) {
+        url = '/list/type/user';
+      }
+      ajax.get(`/api/${url}`, null)
         .then(data => {
-          stateMap.list = data;
+          stateMap.list = data||[];
           spa.gevent.publish('change-list', stateMap.list);
         })
         .catch(error => {
@@ -181,6 +188,147 @@ spa.model = (() =>{
     }
   })();
 
+  const ChatRoom = (() => {
+    const channel = spa.data.getChannel;
+    const ajax = isFakeData ? spa.fake.mockAjax : spa.data.getAjax;
+    const customevent = 'chatroom-state';
+
+    const openChannel = () => {
+      ajax.get('/chat/token', null)
+        .then(response => {
+          channel.open(response.token, customevent);
+        })
+        .catch(error => {
+          spa.gevent.publish('spa-error', error);
+        });
+    };
+
+    const closeChannel = () => {
+      channel.close();
+    };
+    
+    const castLine = (url, params) => {
+      ajax.json(url, params)
+        .then(response => {
+          console.info(response.time);
+        })
+        .catch(error => {
+          spa.gevent.publish('spa-error', error);
+        });
+    };
+
+    //return {Session:, Roomname:, Owner:, Description:, List:[]stay}
+    //List-->自分が参加しているチャットルームのリスト
+    const checkin = () => {
+      const roomid = stateMap.chatroom.roomid;
+      ajax.get(`/chat/checkin/${roomid}`, null)
+        .then(response => {
+          //console.info(response);
+          stateMap.chatroom.list = response.List;
+          stateMap.chatroom.session = response.Session;
+          spa.gevent.publish('chatroom-in', response);
+        })
+        .catch(error => {
+          spa.gevent.publish('spa-error', error);
+        });
+    };
+
+    const getSession = () => {
+      const sessionid = stateMap.chatroom.sessionid;
+      ajax.get('/chat/checkin/session/${sessionid}', null)
+        .then(response => {
+          console.info(response);
+        })
+        .catch(error => {
+          spa.gevent.publish('spa-error', error);
+        });
+    };
+
+    return {
+      open: openChannel,
+      close: closeChannel,
+      post: castLine,
+      checkin: checkin,
+      session: getSession,
+      roomlist: () => _.has(stateMap.chatroom, 'list')? stateMap.chatroom.list:[],
+      message: params => spa.gevent.publish('spa-message', params)
+    };
+
+  })();
+
+  const ChatAdmin = (() => {
+    const ajax = isFakeData ? spa.fake.mockAjax : spa.data.getAjax;
+    const getChatrooms = () => {
+      ajax.get('/chat/chatmin/roomlist', null)
+        .then(response => {
+          //console.info(response);
+          spa.gevent.publish('chatmin-list', response);
+        })
+        .catch(error => {
+          spa.gevent.publish('spa-error', error);
+        });
+    };
+    //add new a chatroom or new a member for chatroom to list
+    //customeve <--- chatmin-list-add or chatmin-members-add
+    const postForm = (url, params) => {
+      //console.info(params);
+      ajax.json(url, params)
+        .then(response => {
+          //add a new chatroom to navi list
+          //console.info(response);
+
+          if (! _.has(stateMap.chatroom, 'list')) stateMap.chatroom.list = [];
+          if (response.customeve === 'chatmin-list-add') {
+            stateMap.chatroom.list.push({roomid: response.id, roomname: response.name});
+          }
+          spa.gevent.publish(response.customeve, response);
+        })
+        .catch(error => {
+          spa.gevent.publish('spa-error', error);
+        });
+    };
+    //memberlist and description about a chatroom
+    //memberlist must have owner 
+    const getRoomInfo = page => {
+      const roomid = _.last(page);
+      ajax.get(`/chat/chatmin/info/${roomid}`, null)
+        .then(response => {
+          //console.info(response);
+          stateMap.chatadmin = response.List;
+          spa.gevent.publish(response.CustomEvent, response);
+        })
+        .catch(error => {
+          spa.gevent.publish('spa-error', error);
+        });
+    };
+
+    //update member flag which is avtive or not
+    const flagedMember = stayid => {
+      const idx = _.findIndex(stateMap.chatadmin, {id: stayid});
+      const stay = stateMap.chatadmin[idx];
+      stay.flag = stay.flag? false: true;
+      ajax.patch('/chat/chatmin/stay', stay)
+        .then(response => {
+          //console.info(response);
+          const idx = _.findIndex(stateMap.chatadmin, {id: response.Id});
+          stateMap.chatadmin[idx].flag = response.Flag;
+          spa.gevent.publish('chatmin-members-flag', {index: idx, flag: response.Flag});
+        })
+        .catch(error => {
+          spa.gevent.publish('spa-error', error);
+        });
+    };
+
+    return {
+      roomlist: getChatrooms,
+      info: getRoomInfo,
+      post: postForm,
+      patch: flagedMember,
+      message: params => spa.gevent.publish('spa-message', params)
+    };
+
+  })();
+
   const initModule = () => {
     //userオブジェクト初期値生成-->初期値-->name='00'-->ログイン未確認
     stateMap.user = {
@@ -192,6 +340,8 @@ spa.model = (() =>{
     initModule: initModule,
     user: User,
     list: List,
-    task: Task
+    task: Task,
+    checkin: ChatRoom,
+    chatmin: ChatAdmin
   };
 })();

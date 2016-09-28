@@ -1,0 +1,18 @@
+#dispatch module
+application: todoscast
+
+dispatch:
+- url: "*/icon.png"
+  module: default
+- url: "*/css/*"
+  module: default
+- url: "*/images/*"
+  module: default
+- url: "*/js/*"
+  module: default
+- url: "*/api/.*"
+  module: todo
+- url: "*/chat/.*"
+  module: chat
+- url: "*/.*"
+  module: default

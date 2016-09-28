@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!--
+  golang todos roomedit.html
+  Copyright ryuji.oike@gmail.com
+-->
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todos Apps</title>
+  <link rel="shortcut icon" href="/images/icon.png">
+  <!-- stylesheets -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosansjapanese.css" type="text/css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel='stylesheet' href='todo.css'>
+  <!-- third-party javascript -->
+  <!-- our javascript -->
+</head>
+<body>
+  <main id="spa">
+    <article id="chat-room-edit">
+      <div class="container">
+        <div class="rounded-box">
+          <span class="white rounded-box">Room管理人：kuwa@thirdpen.com</span>
+        </div>          
+        <h1 class="rounded-box charcoal">Thirdpen Edit</h1>
+        <ul class="grey rounded-box">
+          <li class="white rounded-box"><a>sample1@test.com<a/></li>
+          <li class="white rounded-box"><a>sample2@test.com</a></li>
+          <li class="white rounded-box"><a>sample3@test.com</a></li>
+        </ul> 
+        <form class="grey rounded-box" action="/publish">
+          <div class="chat-room">
+            <label>Type New Address for Chat and Press Enter</label>
+            <input class="rounded-box" type="text" placeholder="new mail address for chat room">
+          </div>
+        </form>
+        <div class="logs">
+          <div class="error rounded-box">login required</div>
+        </div>
+      </div>
+    </article>
+  </main>
+</body>
+</html>

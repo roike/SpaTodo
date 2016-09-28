@@ -2,6 +2,7 @@
  * spa.util.js
  * Copyright 2016 ryuji.oike@gmail.com
  *-----------------------------------------------------------------
+ * updated: 2016-08-09
 */
 
 /*jslint          browser : true,  continue : true,

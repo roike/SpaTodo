@@ -1,5 +1,5 @@
 /*
- * golang todo spa.shell.js
+ * golang Todos spa.shell.js
  * Copyright 2016 ryuji.oike@gmail.com
  * -----------------------------------------------------------------
 */
@@ -14,7 +14,6 @@
 
 /*新規モジュールを追加する場合のtodo---------------
  * anchor_schemaに追加
- * moduleMapに追加
  * ------------------------------------------------
  * popupstateイベント契機で各モジュールの機能をマッピングする
  * 画面遷移ではHrefイベントを起点にする
@@ -34,18 +33,18 @@ spa.shell = (() => {
       anchor_map: []
     },
     //動的に呼び出す他モジュールを格納
-    moduleMap = {};
-
-  //Domコレクションをキャッシュ
-  let domMap = {};
-
-  //定数はここで宣言
-  const
+    moduleMap = {},
+    //定数はここで宣言
+    user_model = spa.model.user,
     //許可するanchorはここで宣言--モジュール名に一致
+    //homeはshellで代用
     anchor_schema = [
+      'home',
+      'checkin', 'chatmin',
       'list', 'task'
     ];
-
+  //Domコレクションをキャッシュ
+  let domMap = {};
   //----------------- END MODULE SCOPE VARIABLES ---------------
 
   //-------------------- BEGIN UTILITY METHODS -----------------
@@ -54,10 +53,11 @@ spa.shell = (() => {
     //page=[schema,,,]
     //現在のurl履歴を登録する
     //戻るリンクの不適切な循環を防止する
-
+    //ひとつ前の画面==stateMap.anchor_map[idx-1]
     const pageHistory = page.join('_');
     let idx = stateMap.anchor_map.indexOf(pageHistory);
     if (page.length == 1) {
+      //anchor only-->moduleの切り替えなので履歴を初期化する
       stateMap.anchor_map = [pageHistory];
       idx = 0;
     }
@@ -71,6 +71,7 @@ spa.shell = (() => {
       //raised unintended operation
       console.info(page.toString());
     }
+    //ひとつ前の画面のページ配列をunderbarで連結する 
     return idx == 0 ? null : stateMap.anchor_map[idx-1].split('_');
   };
 
@@ -80,8 +81,8 @@ spa.shell = (() => {
   //DOMメソッドにはページ要素の作成と操作を行う関数を配置
   const setDomMap = () => {
     domMap = {
-    //domコレクションをキャッシュするとドキュメントトラバーサル数を減らせる
-      //acct: document.getElementById('shell-head-acct'),
+      //domコレクションをキャッシュするとドキュメントトラバーサル数を減らせる
+      //acct: document.getElementById('shell-head-acct
     };
   };
   
@@ -89,10 +90,10 @@ spa.shell = (() => {
 
   //------------------- BEGIN EVENT HANDLERS -------------------
 
-  //グローバルカスタムイベントのコールバック
+  // BEGIN CUSTOM EVENT HANDLERS -------------------
   const onLogin = event => {
-    const user_map = event.detail;
-    spa.uriAnchor.setAnchor( { 'page': user_map.anchor }, false );
+    const user = event.detail;
+    spa.uriAnchor.setAnchor({page: user.anchor}, false);
   };
 
 
@@ -145,13 +146,22 @@ spa.shell = (() => {
     if(element) {
       const hrefList = element.href.split('/'),
         schema = _.intersection(hrefList, anchor_schema);
-
+      
       //console.info(hrefList);
       if(schema.length > 0) {
         event.preventDefault();
-        const anchor = _.rest(hrefList, _.indexOf(hrefList, schema[0]));
-        spa.uriAnchor.setAnchor({page: anchor}, false);
-          
+        //loginの場合のみhrefは有効
+        if(user_model.get().name === 'a0') {
+          const mesData = {
+            message: 'google loginしてください。',
+            property: 'error'
+          };
+
+          spa.gevent.publish('spa-message', mesData);
+        } else {
+          const anchor = _.rest(hrefList, _.indexOf(hrefList, schema[0]));
+          spa.uriAnchor.setAnchor({page: anchor}, false);
+        }
       }
     }
   };
@@ -165,13 +175,13 @@ spa.shell = (() => {
     try {
       //アドレスバーのanchorを適正テスト後に取り出す
       //引数はdefault_anchor,anchorがあればそれを優先
-      const anchor_map_proposed = spa.uriAnchor.makeAnchorMap('list');
+      const anchor_map_proposed = spa.uriAnchor.makeAnchorMap('home');
       //console.info(anchor_map_proposed);
-      const auth = spa.model.user.get().name;;
+      const auth = user_model.get().name;;
       if (auth === '00') {
         //loginチェックを行う
         //domMap.acct.innerText = '... processing ...';
-        spa.model.user.login(anchor_map_proposed.page);
+        user_model.login(anchor_map_proposed.page);
         return false;
       } 
 
@@ -182,7 +192,7 @@ spa.shell = (() => {
         //各anchorで参照する場合は先頭のconfigMapでnull宣言する
         anchor: anchor_map_proposed,
         previous: previous,
-        user: spa.model.user.get(),
+        user: user_model.get(),
         anchor_schema: anchor_schema
       });
 
@@ -201,22 +211,61 @@ spa.shell = (() => {
 
   //-------------------- END EVENT HANDLERS --------------------
 
-  //---------------------- BEGIN CALLBACKS ---------------------
-  //----------------------- END CALLBACKS ---------------------
-
   //------------------- BEGIN PUBLIC METHODS -------------------
-  //外部に公開するものを明示する
-  //loader animation params={height:, top:, background: }
-  
+  //ナビゲーションメニュの表示
+  //loadIn==true-->メニュウを表示
+  //return true-->表示中
+  const loadChatavi = (pos, list, loadIn) => {
+    const fadeInDown = () => {
+      stateMap.container.insertAdjacentHTML('afterbegin', spa.shell.chatavi(
+        list.map(({roomid, roomname}) => 
+          `<a href="/checkin/${roomid}">${roomname}</a>`).join('')
+      ));
+      const navi = stateMap.container.querySelector(".chat-navi-in");
+      navi.style.top = `${pos.y}px`;
+      navi.style.left = `${pos.x}px`;
+
+      if (navi.classList.contains('is-paused')) {
+        navi.classList.remove("is-paused");
+      }
+      return true;
+    };
+
+    const fadeOutUp = navi => {
+      navi.animate([
+        //keyframes
+        { 
+          opacity: 1,
+          transform: 'translate3d(0, 0, 0)'
+        },
+        { 
+          opacity: 0,
+          transform: 'translate3d(0, -200px, 0)' 
+        }], 1000);
+      
+    };
+    
+    if (loadIn) {
+      const navi = stateMap.container.querySelector(".chat-navi-in");
+      fadeOutUp(navi);
+      _.delay(
+        () => {
+          stateMap.container.removeChild(navi);
+        }, 1000);
+      return false;
+    }
+
+    return fadeInDown();
+  };
   const initModule = () => {
     //ルーティング対象はすべてmoduleMapに組み込む
     moduleMap.error = spa.error;
-    moduleMap.list = spa.list;
-    moduleMap.task = spa.task;
+    _.each(anchor_schema, ele => {
+      moduleMap[ele] = spa[ele];
+    });
 
     stateMap.container = document.getElementById('spa');
-    setDomMap();
-
+    
     //グローバルカスタムイベントのバインド
     spa.gevent.subscribe( stateMap.container, 'spa-login', onLogin  );
     spa.gevent.subscribe( stateMap.container, 'spa-error', onError );
@@ -224,15 +273,12 @@ spa.shell = (() => {
 
     // ローカルイベントのバインド
     document.addEventListener('click', handleAnchorClick, false);
-
     //callできるanchorを設定
     spa.uriAnchor.setConfig(anchor_schema);
 
     // Handle URI anchor change events.
     window.addEventListener('popstate', onPopstate);
-
     window.dispatchEvent(new Event('popstate'));
-
   };
 
   
@@ -240,6 +286,7 @@ spa.shell = (() => {
   //shellが公開するメソッド
   return {
     initModule: initModule,
+    chatNavi: loadChatavi
   };
   //------------------- END PUBLIC METHODS ---------------------
 })();
@@ -250,4 +297,14 @@ spa.shell.message = message => {
       <i class="material-icons">error_outline</i>
       ${message}
     </div>`;
+};
+
+spa.shell.chatavi = chatrooms => {
+  return `
+    <nav class="chat-navi-in is-paused">
+      <h2>Todos ナビゲーション</h2>
+      <a href="/home">Home</a>
+      <a href="/chatmin">ChatRoom管理</a>
+      ${chatrooms}
+    </nav>`;
 };

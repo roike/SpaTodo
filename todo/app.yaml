@@ -1,0 +1,10 @@
+#todo module
+application: todoscast
+version: 1-01
+module: todo
+runtime: go
+api_version: go1
+
+handlers:
+- url: /.*
+  script: _go_app

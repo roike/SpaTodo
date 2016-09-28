@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  golang todo.html
+  Apps todos.html
   Copyright ryuji.oike@gmail.com
 -->
 <html lang="ja">
@@ -13,21 +13,25 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosansjapanese.css" type="text/css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel='stylesheet' href='/css/todo.css'>
+  <link rel='stylesheet' href='/css/todos.css'>
   <!-- third-party javascript -->
+  <script type="text/javascript" src="/_ah/channel/jsapi"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
   <!-- our javascript -->
-  <script src="/js/spa.js"></script>
-  <script src="/js/spa.util.js"></script>
-  <script src="/js/spa.uriAnchor.js"></script>
-  <script src="/js/spa.gevent.js"></script>
-  <script src="/js/spa.data.js"></script>
-  <script src="/js/spa.fake.js"></script>
+  <script src="/js/lib/spa.js"></script>
+  <script src="/js/lib/spa.util.js"></script>
+  <script src="/js/lib/spa.uriAnchor.js"></script>
+  <script src="/js/lib/spa.gevent.js"></script>
+  <script src="/js/lib/spa.data.js"></script>
+  <script src="/js/lib/spa.fake.js"></script>
+  <script src="/js/lib/spa.error.js"></script>
   <script src="/js/spa.model.js"></script>
   <script src="/js/spa.shell.js"></script>
-  <script src="/js/spa.error.js"></script>
+  <script src="/js/spa.home.js"></script>
   <script src="/js/spa.list.js"></script>
   <script src="/js/spa.task.js"></script>
+  <script src="/js/spa.checkin.js"></script>
+  <script src="/js/spa.chatmin.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       spa.initModule();
@@ -35,6 +39,8 @@
   </script>
 </head>
 <body>
+  <header><h1>Todos Apps</h1></header>
   <main id="spa"></main> 
+  <footer><h2>Made By Ryuji OIke</h2></footer>
 </body>
 </html>

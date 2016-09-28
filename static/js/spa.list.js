@@ -71,20 +71,20 @@ spa.list = (() => {
   const loadListTemplate = event => {
     //lists = [{ID:, Name:, Creater:},,,]
     const lists = event.detail;
-    const user = spa.model.user.get();
+    const type = _.last(configMap.anchor.page);
     let
-      login_url = user.logout,
-      login_state = 'Log out',
+      list_url = '/list/type/all',
+      list_type = 'グループのリストを表示する',
       title = 'Your lists';
 
-    if(user.name === 'a0') {
-      login_url = user.login;
-      login_state = 'Log in';
+    if(type === 'all') {
+      list_url = '/list/type/user';
+      list_type = 'あなたのリストを表示する';
       title = 'All the lists';
     }
     //params = [login_url, login_state, title, lists]
     stateMap.container.innerHTML = spa.list.template([
-      login_url, login_state, title,
+      list_url, list_type, title,
       lists.map(({Name, ID}) => 
         `<li><a class="white rounded-box" href="/task/${ID}">${Name}</a></li>`).join('')
     ]);
@@ -123,7 +123,7 @@ spa.list = (() => {
     let key = 'fetch';
     if (configMap.anchor.cache) key = 'current';
 
-    list_model[key]();
+    list_model[key](configMap.anchor.page);
   };
 
 
@@ -135,12 +135,12 @@ spa.list = (() => {
   //------------------- END PUBLIC METHODS ---------------------
 })();
 
-spa.list.template = ([login_url, login_state, title, lists]) => {
+spa.list.template = ([list_url, list_type, title, lists]) => {
   return `
     <article id="list-container">
       <div class="container">
         <div class="rounded-box">
-          <a class="white rounded-box" href="${login_url}">${login_state}</a>
+          <a class="white rounded-box" href="${list_url}">${list_type}</a>
         </div>          
         <h1 class="rounded-box charcoal">${title}</h1>
         <ul id="lists" class="grey rounded-box">${lists}</ul>

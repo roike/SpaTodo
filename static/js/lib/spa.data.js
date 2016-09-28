@@ -2,7 +2,7 @@
  * template spa.data.js
  * Copyright 2016 ryuji.oike@gmail.com
  *-----------------------------------------------------------------
- * version:1.04
+ * updated:2016-08-16
 */
 
 /*jslint         browser : true, continue : true,
@@ -146,29 +146,27 @@ spa.data = (() => {
 
   })();
 
-  const makeSio = (() => {
+  const makeChannel = (() => {
     //オープンする通信チャネルはChannel Api
-
-    const openChannel = token => {
+    //messaheでcallするカスタムイベントは呼び出し元で設定する
+    const openChannel = (token, customevent) => {
       const channel = new goog.appengine.Channel(token);
       const socket = channel.open();
-      socket.onopen = () => {console.info('通信チャネルが開通しました。');};
-      socket.onerror = () => {console.info('通信チャネルがタイムアウトしました。');};
-      socket.onclose = () => {console.info('通信チャネルが終了しました。');};
+      socket.onopen = () => {
+        spa.gevent.publish(customevent, {onopen: '通信チャネルが開通しました。'});
+      };
+      socket.onerror = () => {
+        spa.gevent.publish(customevent, {onerror: '通信チャネルがタイムアウトしました。'});
+      };
+      socket.onclose = () => {
+        console.info('Close Channel');
+      };
       socket.onmessage = m => {
+        //console.info(m);
         const data = JSON.parse(m.data);
-        spa.gevent.publish(data.callback, data.publish);
+        spa.gevent.publish(data.customeve, data);
       };
       stateMap.socket = socket;
-    };
-
-    const sendMessage = (url, params) => {
-
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', url, true);
-      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-      xhr.send(encodedString(params));
-
     };
 
     const closeSocket = () => {
@@ -177,7 +175,6 @@ spa.data = (() => {
 
     return {
       open: openChannel,
-      emit: sendMessage,
       close: closeSocket
     };
 
@@ -186,7 +183,7 @@ spa.data = (() => {
   //公開するモジュールを定義
   return {
     getAjax: makeAjax,
-    getSio: makeSio
+    getChannel: makeChannel
   };
 })();
 

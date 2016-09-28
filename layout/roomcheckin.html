@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!--
+  golang todos roomcheckin.html
+  Copyright ryuji.oike@gmail.com
+-->
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todos Apps</title>
+  <link rel="shortcut icon" href="/images/icon.png">
+  <!-- stylesheets -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosansjapanese.css" type="text/css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel='stylesheet' href='todo.css'>
+  <!-- third-party javascript -->
+  <!-- our javascript -->
+</head>
+<body>
+  <header><h1>Todos Apps</h1></header>
+  <main id="spa">
+    <article id="chat-container">
+      <div class="container">
+        <header class="rounded-box">
+          <i class="material-icons">menu</i>
+          <div class="white rounded-box centered">ChatRoom管理人：ryuji.oike</div>
+        </header>    
+        <nav class="menu">
+          <h2>Todos ナビゲーション</h2>
+          <a href="/newist">Home</a>
+          <a href="/newist">ChatRoom管理 </a>
+          <a href="/newist">Room Todos </a>
+        </nav>
+        <h2 class="content-title rounded-box charcoal">
+          Todos
+        </h2>
+        <div id="chat-screen">
+          <div class="chat-online">
+            <span class="even">ryuji.oike:2019/08/16<br>
+            デモ用のサンプルとして公開しています。<br>
+            サンプルとしての性格上、作成されたチャットルームや投稿内容は提供側の任意で削除します。<br>
+            ご了解ください。</span>
+          </div>
+          <div class="chat-online">
+            <span class="even">ryuji.oike:2019/08/16<br>
+              一度に投稿できる最大文字数は200文字です。<br>
+              メニューで自分のチャットルームを作成しルームのメンバーを招待できます。
+            </span>
+          </div>
+        </div>
+        <form class="grey rounded-box" action="/publish">
+          <div class="chat-room">
+            <label>Type Message and Press Enter</label>
+            <input class="rounded-box" type="text" placeholder="you chat here">
+          </div>
+        </form>
+        <div class="logs">
+          <div class="error rounded-box">login required</div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer><h2>Made By Ryuji OIke</h2></footer>
+</body>
+</html>

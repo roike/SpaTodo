@@ -1,0 +1,240 @@
+/*
+  Apps todos.css
+  Copyright ryuji.oike@gmail.com.
+*/
+/*---common definition--------------------------*/
+ html, body {
+    -webkit-font-smoothing:antialiased;
+    background: #f8f8f8;
+    margin: 0;
+    border: 0;
+    padding: 0;
+}
+body, input, button, textarea {
+    font-family: Roboto, 'Noto Sans Japanese', sans-serif;
+    /*font-family: Roboto, "游ゴシック", YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, Helvetica, Arial, sans-serif;*/
+    font-size: 16px;
+    color: #444;
+}
+* {
+    box-sizing: border-box;
+    outline: none;
+}
+*:disabled {
+    color: #888;
+}
+
+header {display: flex;}
+header div {width: 100%;}
+header h1, footer h2 {
+  line-height: 0;
+  display: none;
+}
+
+#spa {
+  position: relative;
+}
+.container {
+    width: 80%;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.material-icons {
+  font-size: 36px;
+  color: #9e9e9e;
+}
+
+.content-title {
+    text-align: center;
+    font-size: 3em;
+    font-weight: 200;
+    margin: 20px 0;
+}
+
+a {
+    cursor: pointer;
+    display: block;
+    font-weight: normal;
+    text-decoration: none;
+    text-align: center;
+    color: #333;
+}
+
+a:hover, i:hover, button:hover {
+    background: #ccc;
+    transition: background 250ms;
+}
+.clickable, i, button {
+    cursor: pointer;
+}
+li {
+    list-style: none;
+    padding: 5px;
+}
+li span {
+  display: block;
+}
+input[type=text] {
+    width: 100%;
+}
+button[type=button] { width: 100%;}
+button[type=submit] {
+  border: 0;
+  background: none;
+  vertical-align: bottom;
+  float: right;
+}
+
+.rounded-box {
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px #ddd solid;
+}
+
+.centered {
+    text-align: center;
+}
+.white {
+    background: #fff;
+}
+.grey {
+    background: #eee;
+}
+.charcoal {
+    color: #fff;
+    background: #444;
+}
+.logs {
+    margin: 10px 0;
+}
+.logs .error {
+    background: #faa;
+}
+.logs .info {
+    background: #afa;
+}
+
+li.isDone {
+    color: #888;
+    text-decoration: line-through;
+}
+
+.hover {
+  cursor: pointer;
+}
+.hover:hover {
+  background: #ccc;
+  transition: background 250ms;
+}
+
+.form {margin: 10px 0;}
+
+/*--matereal-icons-----------------------------*/
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+.material-icons.md-light { color: rgba(255, 255, 255, 1); }
+.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+/*--spa-task-----------------------------------*/
+#task-tasks li > a {
+  text-align: left;
+}
+
+#task-container li .checkbox {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: white;
+    margin-right: 8px;
+    border-radius: 2px;
+    border: 1px #ddd solid;
+}
+#task-tasks input[type=text], #task-container input[type=text] {
+    width: 85%;
+}
+
+/*--各モジュールで呼び出してspa.shellで生成-----*/
+#spa-message {
+  z-index: 289;
+}
+
+#spa-message i { vertical-align: bottom;}
+
+@keyframes fadeinout {
+  from, to { opacity: 0; }
+  30% { opacity: 1; }
+}
+
+.fadeInAndOut {
+  animation: fadeinout 6s linear forwards;
+}
+
+.is-paused {
+  animation-play-state: paused;
+}
+
+/*----ChatRoom--------------------------------*/
+/* session-------*/
+#chat-session {
+  height: 650px;
+  background-image: url('/images/gopher.png');
+  background-size: 100% auto;
+  padding: 10px 0;
+}
+
+.chat-online {
+  padding: 5px;
+}
+
+.chat-online span.even {
+  background-color: rgba(255,255,255, 0.8);
+  color: #795548;
+}
+
+.chat-online span.odd {
+  background-color: rgba(205,220,57, 0.6);
+}
+.chat-description {
+  margin: 10px 0;
+}
+
+/* chatmin-------*/
+.chat-members, .chat-description {
+  padding: 5px;
+  width: 100%;
+}
+.chat-description > textarea {
+  width: inherit;
+}
+
+/*navigation------*/
+.chat-navi-in {
+  position: absolute;
+  color: #444;
+  padding: 10px;
+  background-color: rgba(255,255,255, 0.8);
+}
+
+@keyframes navin {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -200px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.chat-navi-in {
+  animation-name: navin;
+  animation-duration: 1s;
+  animation-timing-function: linrar;
+  animation-fill-mode: forwards;
+}
+

@@ -1,5 +1,5 @@
 /*
- * golang ToDo spa.task.js
+ * golang Todos spa.task.js
  * Copyright 2016 ryuji.oike@gmail.com
 */
 

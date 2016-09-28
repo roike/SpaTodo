@@ -1,9 +1,8 @@
 /*
- Copyright 2011 The Go Authors.  All rights reserved.
- Use of this source code is governed by a BSD-style
- license that can be found in the LICENSE file.
+  Apps todos.css
+  Copyright ryuji.oike@gmail.com.
 */
- html, body {
+html, body {
     -webkit-font-smoothing:antialiased;
     background: #f8f8f8;
     margin: 0;
@@ -28,15 +27,24 @@ body, input, button {
     margin: 0 auto;
 }
 
+.material-icons {
+  font-size: 36px;
+  color: #9e9e9e;
+}
 
-.material-icons.md-36 { font-size: 36px; }
-.material-icons.grey500 { color: #9e9e9e; }
-
-h1 {
+.content-title {
     text-align: center;
     font-size: 3em;
     font-weight: 200;
+    margin: 20px 0;
 }
+header {display: flex;}
+header div {width: 100%;}
+header h1, footer h2 {
+  line-height: 0;
+  display: none;
+}
+
 a {
     cursor: pointer;
     display: block;
@@ -63,6 +71,11 @@ input[type=text] {
     width: 85%;
 }
 
+.chat-room input[type=text] {
+  margin: 5px;
+  width: 100%;
+}
+
 button[type=submit] {
   border: 0;
   background: none;
@@ -70,7 +83,6 @@ button[type=submit] {
   cursor: pointer;
   float: right;
 }
-
 .rounded-box {
   padding: 10px;
   border-radius: 4px;
@@ -99,6 +111,36 @@ button[type=submit] {
 .logs div.info {
     background: #afa;
 }
-.clickable {
+.clickable, i {
     cursor: pointer;
 }
+
+form {margin: 10px 0;}
+
+/*--chat-online----*/
+
+#chat-screen {
+  height: 650px;
+  background-image: url('../static/images/gopher.png');
+  background-size: 100% auto;
+  padding: 10px 0;
+
+}
+
+nav.menu {
+  display: none;
+}
+.chat-online {
+  padding: 5px;
+}
+
+.chat-online span.even {
+  background-color: rgba(255,255,255, 0.8);
+  color: #795548;
+}
+
+.chat-online span.odd {
+  background-color: rgba(205,220,57, 0.6);
+}
+
+
